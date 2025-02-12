@@ -112,19 +112,15 @@
                 <th>Prodi</th>
                 <th>Status</th>
                 <th>Periode</th>
-                <th>Tanggal Penilaian</th>
-                <th>Nilai (SISTER)</th>
-                <th>Nilai (PK)</th>
                 <th>Total Nilai</th>
                 <th>Grade</th>
-                <th>Dosen Penilai</th>
             </tr>
         </thead>
         <tbody>
             @php
                 $nomorUrut = 1;
             @endphp
-            @forelse($penilaianPerilaku as $penilaian)
+            @forelse($penilaianSister as $penilaian)
                 <tr>
                     <td>{{ $nomorUrut++ }}</td>
                     <td>{{ $penilaian->dosen->nama_dosen }}</td>
@@ -132,38 +128,31 @@
                     <td>{{ $penilaian->dosen->prodi->nama_prodi ?? '-' }}</td>
                     <td><span>Aktif</span></td>
                     <td>{{ $penilaian->periode->nama_periode ?? '-' }}</td>
-                    <td>{{ Carbon\Carbon::parse($penilaian->tanggal_penilaian)->format('d-m-Y') }}</td>
-                    <td>{{ $penilaian->nilai_sister }}</td>
-                    <td>{{ $penilaian->total_nilai }}</td>
                     <td>
                         @php
-                            $nilaiSister = floatval($penilaian->nilai_sister);
-                            $nilaiPK = floatval($penilaian->total_nilai);
-                            $totalNilai = 0.6 * $nilaiSister + 0.4 * $nilaiPK;
+                            $nilaiSister = floatval($penilaian->total_nilai);
                         @endphp
-                        {{ number_format($totalNilai, 2) }}
+                        {{ number_format($nilaiSister, 2) }}
                     </td>
                     <td>
                         @php
-                            $nilai = $totalNilai;
                             $grade =
-                                $nilai >= 4.56
+                                $nilaiSister >= 4.75
                                     ? 'A'
-                                    : ($nilai >= 3.56
+                                    : ($nilaiSister >= 3.75
                                         ? 'B'
-                                        : ($nilai >= 2.56
+                                        : ($nilaiSister >= 2.75
                                             ? 'C'
-                                            : ($nilai >= 1.56
+                                            : ($nilaiSister >= 1.75
                                                 ? 'D'
                                                 : 'E')));
                         @endphp
                         {{ $grade }}
                     </td>
-                    <td>{{ $penilaian->user->dosen->nama_dosen ?? '-' }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="12" style="text-align: center;">Tidak ada data penilaian</td>
+                    <td colspan="8" style="text-align: center;">Tidak ada data penilaian</td>
                 </tr>
             @endforelse
         </tbody>

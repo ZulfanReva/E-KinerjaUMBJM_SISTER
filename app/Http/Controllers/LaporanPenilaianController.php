@@ -122,8 +122,8 @@ class LaporanPenilaianController extends Controller
 
     public function exportPDF(Request $request)
     {
-        // Get filtered data based on request parameters
-        $query = PenilaianPerilakuKerja::with(['dosen.prodi', 'user.dosen', 'periode']);
+        // Ambil data penilaian SISTER dengan relasi dosen dan periode
+        $query = PenilaianSISTER::with(['dosen.prodi', 'periode']);
 
         $periodeFilter = 'SEMUA PERIODE';
         if ($request->has('prodi') && $request->prodi) {
@@ -139,50 +139,27 @@ class LaporanPenilaianController extends Controller
             $periodeFilter = $request->periode;
         }
 
-        $penilaianPerilaku = $query->get();
+        $penilaianSister = $query->get();
 
-        // Loop untuk menambahkan nilai SISTER
-        $penilaianPerilaku->each(function ($penilaian) {
-            // Cari nilai SISTER dengan periode yang sama
-            $nilaiSister = PenilaianSISTER::where('dosen_id', $penilaian->dosen_id)
-                ->where('periode_id', $penilaian->periode_id)
-                ->first();
-
-            // Tambahkan nilai SISTER ke objek penilaian
-            $penilaian->nilai_sister = $nilaiSister ? $nilaiSister->total_nilai : '-';
+        // Tambahkan perhitungan grade ke setiap data
+        $penilaianSister->each(function ($penilaian) {
+            $nilaiSister = floatval($penilaian->total_nilai ?? 0);
+            $penilaian->grade =
+                $nilaiSister >= 4.75 ? 'A' : ($nilaiSister >= 3.75 ? 'B' : ($nilaiSister >= 2.75 ? 'C' : ($nilaiSister >= 1.75 ? 'D' : 'E')));
         });
 
-        // Calculate grades and add as attribute
-        $penilaianPerilaku->map(function ($penilaian) {
-            // Hitung total nilai berdasarkan nilai SISTER dan nilai PK
-            $nilaiSister = floatval($penilaian->nilai_sister !== '-' ? $penilaian->nilai_sister : 0);
-            $nilaiPK = floatval($penilaian->total_nilai);
-            $totalNilai = 0.6 * $nilaiSister + 0.4 * $nilaiPK;
-
-            // Set grade berdasarkan total nilai yang baru
-            $penilaian->grade = $totalNilai >= 4.56 ? 'A' : ($totalNilai >= 3.56 ? 'B' : ($totalNilai >= 2.56 ? 'C' : ($totalNilai >= 1.56 ? 'D' : 'E')));
-            return $penilaian;
-        });
-
-        // Sort collection by total_nilai (descending) and grade
-        $penilaianPerilaku = $penilaianPerilaku->sortByDesc(function ($penilaian) {
-            $gradeOrder = [
-                'A' => 1,
-                'B' => 2,
-                'C' => 3,
-                'D' => 4,
-                'E' => 5
-            ];
-
+        // Sorting berdasarkan nilai total dan grade
+        $gradeOrder = ['A' => 1, 'B' => 2, 'C' => 3, 'D' => 4, 'E' => 5];
+        $penilaianSister = $penilaianSister->sortByDesc(function ($penilaian) use ($gradeOrder) {
             return [$penilaian->total_nilai, $gradeOrder[$penilaian->grade]];
         });
 
-        // Encode images to base64
+        // Encode gambar kop surat dan tanda tangan
         $kopImage = base64_encode(file_get_contents(public_path('assets/foto/kopsurat.png')));
         $ttdImage = base64_encode(file_get_contents(public_path('assets/foto/ttddigital.png')));
 
         $pdf = PDF::loadView('pageadmin.laporanpenilaian.pdf', [
-            'penilaianPerilaku' => $penilaianPerilaku,
+            'penilaianSister' => $penilaianSister,
             'exportDate' => Carbon::now()->format('d-m-Y H:i:s'),
             'kopBase64' => 'data:image/png;base64,' . $kopImage,
             'ttdBase64' => 'data:image/png;base64,' . $ttdImage,
@@ -192,6 +169,6 @@ class LaporanPenilaianController extends Controller
         $pdf->getDomPDF()->set_option('isRemoteEnabled', true);
         $pdf->getDomPDF()->set_option('isHtml5ParserEnabled', true);
 
-        return $pdf->download('penilaian-perilaku-kerja-' . Carbon::now()->format('Y-m-d') . '.pdf');
+        return $pdf->download('laporan-penilaian-sister-' . Carbon::now()->format('Y-m-d') . '.pdf');
     }
 }
