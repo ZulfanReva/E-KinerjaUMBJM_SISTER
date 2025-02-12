@@ -263,7 +263,7 @@
                 </div>
 
                 <!-- Tabel Data Dosen Berjabatan -->
-                <div class="row mt-4">
+                {{-- <div class="row mt-4">
                     <div class="col-12">
                         <div class="card mb-4">
                             <div class="card-header pb-2" style="margin-bottom: 10px;">
@@ -383,7 +383,7 @@
                         </div>
                     </div>
 
-                </div>
+                </div> --}}
 
                 <!-- Footer -->
                 <x-footeradminpengawas></x-footeradminpengawas>
