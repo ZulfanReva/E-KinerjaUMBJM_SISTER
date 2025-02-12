@@ -50,43 +50,37 @@ class LaporanPenilaianController extends Controller
     public function show($id)
     {
         try {
-            // Ambil data penilaian perilaku kerja, dosen, dan user
-            $penilaian = PenilaianPerilakuKerja::with(['dosen.prodi', 'user.dosen'])->findOrFail($id);
+            // Ambil data penilaian_sister dengan relasi dosen dan periode
+            $penilaian = PenilaianSISTER::with(['dosen', 'periode'])->findOrFail($id);
 
-            // Ambil data penilaian SISTER yang sesuai dengan dosen dan periode penilaian
-            $nilaiSister = PenilaianSISTER::where('dosen_id', $penilaian->dosen_id)
-                ->where('periode_id', $penilaian->periode_id)
-                ->first();
-
-            // Menambahkan nilai SISTER ke objek penilaian
-            $penilaian->penilaian_sister = $nilaiSister;
+            // Ambil nilai untuk bidang-bidang dalam penilaian_sister
+            $bidangPendidikan = $penilaian->bidang_pendidikan ?? '-';
+            $bidangPenelitian = $penilaian->bidang_penelitian ?? '-';
+            $bidangPengabdian = $penilaian->bidang_pengabdian ?? '-';
+            $bidangPenunjang = $penilaian->bidang_penunjang ?? '-';
 
             // Hitung total nilai
-            $nilaiSisterValue = floatval($penilaian->penilaian_sister->total_nilai ?? 0);
-            $nilaiPK = floatval($penilaian->total_nilai);
-            $totalNilai = 0.6 * $nilaiSisterValue + 0.4 * $nilaiPK;
+            $nilaiSisterValue = floatval($penilaian->total_nilai ?? 0);
 
-            // Tentukan grade berdasarkan total nilai
-            $grade = $totalNilai >= 4.56 ? 'A' : ($totalNilai >= 3.56 ? 'B' : ($totalNilai >= 2.56 ? 'C' : ($totalNilai >= 1.56 ? 'D' : 'E')));
+            // Tentukan grade berdasarkan nilai total
+            $grade = $nilaiSisterValue >= 4.75 ? 'A' : ($nilaiSisterValue >= 3.75
+                ? 'B' : ($nilaiSisterValue >= 2.75
+                    ? 'C' : ($nilaiSisterValue >= 1.75
+                        ? 'D' : 'E')));
 
             // Tentukan kesimpulan berdasarkan grade
             $kesimpulan = [];
             if ($grade === 'A') {
                 $kesimpulan = [
                     'Pujian dalam forum rapat resmi',
-                    'Sertifikat keberhasilan',
-                    'Piagam penghargaan',
-                    'Tugas belajar atau studi lanjut (di dalam/luar negeri) atas biaya universitas',
-                    'Loncat jabatan fungsional atau kenaikan pangkat istimewa',
-                    'Publikasi atas biaya universitas',
+                    'Loncat jabatan fungsional atau kenaikan pangkat istimewa *Syarat & Ketentuan oleh SDI',
+                    'Tugas belajar atau studi lanjut di luar negeri atas biaya universitas *Syarat & Ketentuan oleh SDI',
                 ];
             } elseif ($grade === 'B') {
                 $kesimpulan = [
                     'Pujian dalam forum rapat resmi',
-                    'Ucapan terima kasih secara formal',
-                    'Sertifikat keberhasilan',
-                    'Pembebasan SPP untuk pendidikan lanjutan',
-                    'Tugas belajar (tergantung keputusan universitas)',
+                    'Sertifikat keberhasilan atau ucapan terima kasih secara formal',
+                    'Pembebasan SPP untuk pendidikan lanjutan di dalam negeri *Syarat & Ketentuan oleh SDI',
                 ];
             } elseif ($grade === 'C') {
                 $kesimpulan = [
@@ -98,16 +92,14 @@ class LaporanPenilaianController extends Controller
                 $kesimpulan = [
                     'Teguran lisan atau tertulis',
                     'Peringatan keras',
-                    'Penundaan kenaikan gaji berkala',
-                    'Penundaan kenaikan pangkat',
+                    'Penundaan kenaikan gaji berkala *Syarat & Ketentuan oleh SDI',
                 ];
             } else {
                 $kesimpulan = [
                     'Peringatan keras',
-                    'Pembebasan tugas',
+                    'Pembebasan tugas *Syarat & Ketentuan oleh SDI',
                     'Penundaan kenaikan gaji berkala',
-                    'Penundaan kenaikan pangkat',
-                    'Pemberhentian jika tidak ada perbaikan signifikan',
+                    'Pemberhentian jika tidak ada perbaikan signifikan *Syarat & Ketentuan oleh SDI',
                 ];
             }
 
@@ -115,18 +107,17 @@ class LaporanPenilaianController extends Controller
             $penilaian->kesimpulan = $kesimpulan;
 
             // Menambahkan total nilai dan grade ke objek penilaian
-            $penilaian->total_nilai_calculated = number_format($totalNilai, 2);
+            $penilaian->total_nilai_calculated = number_format($nilaiSisterValue, 2);
             $penilaian->grade = $grade;
 
-            // Kirim data ke tampilan
-            return view('pageadmin.laporanpenilaian.show', compact('penilaian'));
+            // Kirim data ke tampilan dengan data yang diperbaiki
+            return view('pageadmin.laporanpenilaian.show', compact('penilaian', 'bidangPendidikan', 'bidangPenelitian', 'bidangPengabdian', 'bidangPenunjang'));
         } catch (\Exception $e) {
             // Jika data tidak ditemukan, redirect dengan pesan error
             return redirect()->route('admin.laporanpenilaian.index')
                 ->with('error', 'Data penilaian tidak ditemukan.');
         }
     }
-
 
 
     public function exportPDF(Request $request)

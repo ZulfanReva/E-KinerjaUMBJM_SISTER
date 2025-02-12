@@ -81,7 +81,7 @@
                         class="bg-gradient-info icon-shape shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <img src="{{ asset('assets/foto/pm.png') }}" alt="Penilaian SISTER" width="50" height="50">
                     </div>
-                    <span class="nav-link-text ms-1">Data SISTER</span>
+                    <span class="nav-link-text ms-1">Penilaian SISTER</span>
                 </a>
             </li>
             <li class="nav-item">

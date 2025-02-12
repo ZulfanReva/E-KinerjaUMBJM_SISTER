@@ -149,7 +149,7 @@
 
                 <!-- Header Text -->
                 <div class="header" style="text-align: center; margin-bottom: 0px;">
-                    <h2 style="margin-bottom: -5px; font-size: 16pt;">LAPORAN PENILAIAN PERILAKU KERJA DOSEN</h2>
+                    <h2 style="margin-bottom: -5px; font-size: 16pt;">LAPORAN PENILAIAN KINERJA DOSEN</h2>
                     <h3 style="margin-bottom: -5px; font-size: 14pt;">UNIVERSITAS MUHAMMADIYAH BANJARMASIN</h3>
                     {{-- <h4 style="margin-bottom: -1px; font-size: 12pt;">PERIODE: {{ $periodeFilter ?? 'SEMUA PERIODE' }} --}}
                     </h4>
@@ -267,104 +267,30 @@
                         </div>
 
                         <div class="col-md-6">
-                            <h6 class="text-uppercase text-sm">Profil Dosen Penilai</h6>
-                            <table class="table table-bordered custom-font">
-                                <tr>
-                                    <td>Nama</td>
-                                    <td>{{ $penilaian->user->dosen->nama_dosen ?? '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Jabatan</td>
-                                    <td>{{ $penilaian->user->dosen->jabatan->nama_jabatan ?? '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Tanggal Penilaian</td>
-                                    <td>{{ \Carbon\Carbon::parse($penilaian->tanggal_penilaian)->format('d/m/Y') }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Periode</td>
-                                    <td>{{ $penilaian->periode->nama_periode ?? '-' }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Penilaian SISTER dan Penilaian Perilaku Kerja -->
-                    <div class="row mb-2 custom-font">
-                        <div class="col-md-6">
                             <h6 class="text-uppercase text-sm">PENILAIAN SISTER</h6>
                             <table class="table table-bordered custom-font">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">ASPEK</th>
-                                        <th class="text-center">NILAI</th>
-                                    </tr>
-                                </thead>
                                 <tbody>
                                     <tr>
                                         <td class="text-start">Bidang Pendidikan</td>
-                                        <td class="text-center">
-                                            {{ $penilaian->penilaian_sister->bidang_pendidikan ?? '-' }}</td>
+                                        <td class="text-center">{{ $bidangPendidikan }}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-start">Bidang Penelitian</td>
-                                        <td class="text-center">
-                                            {{ $penilaian->penilaian_sister->bidang_penelitian ?? '-' }}</td>
+                                        <td class="text-center">{{ $bidangPenelitian }}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-start">Bidang Pengabdian</td>
-                                        <td class="text-center">
-                                            {{ $penilaian->penilaian_sister->bidang_pengabdian ?? '-' }}</td>
+                                        <td class="text-center">{{ $bidangPengabdian }}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-start">Bidang Penunjang</td>
-                                        <td class="text-center">
-                                            {{ $penilaian->penilaian_sister->bidang_penunjang ?? '-' }}</td>
+                                        <td class="text-center">{{ $bidangPenunjang }}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <!-- Penilaian Perilaku Kerja -->
-                        <div class="col-md-6">
-                            <h6 class="text-uppercase text-sm">Penilaian Perilaku Kerja</h6>
-                            <table class="table table-bordered custom-font">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">ASPEK</th>
-                                        <th class="text-center">NILAI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-start">Orientasi Pelayanan</td>
-                                        <td class="text-center">{{ $penilaian->orientasi_pelayanan }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-start">Integritas</td>
-                                        <td class="text-center">{{ $penilaian->integritas }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-start">Komitmen</td>
-                                        <td class="text-center">{{ $penilaian->komitmen }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-start">Disiplin</td>
-                                        <td class="text-center">{{ $penilaian->disiplin }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-start">Kerjasama</td>
-                                        <td class="text-center">{{ $penilaian->kerjasama }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-start">Kepemimpinan</td>
-                                        <td class="text-center">{{ $penilaian->kepemimpinan }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
-
 
                     <!-- Hasil Perhitungan -->
                     <div class="row mb-2 custom-font">
