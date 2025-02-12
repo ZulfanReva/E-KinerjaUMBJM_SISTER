@@ -80,8 +80,16 @@ class PenilaianSisterController extends Controller
     {
         $dosen = Dosen::findOrFail($request->dosen_id);
 
-        // Ambil daftar periode dari tabel `periode` dalam bentuk koleksi
+        // Ambil semua periode
         $periodeList = Periode::all();
+
+        // Filter periode yang sudah ada penilaiannya
+        $periodeList = $periodeList->filter(function ($periode) use ($dosen) {
+            // Cek apakah sudah ada penilaian untuk dosen di periode ini
+            return !PenilaianSISTER::where('dosen_id', $dosen->id)
+                ->where('periode_id', $periode->id)
+                ->exists();
+        });
 
         return view('pageadmin.penilaiansister.create', compact('dosen', 'periodeList'));
     }
@@ -115,8 +123,6 @@ class PenilaianSisterController extends Controller
         return redirect()->route('admin.penilaiansister.index')
             ->with('success', 'Data SISTER berhasil ditambahkan!');
     }
-
-
 
     /**
      * Display the specified resource.
