@@ -93,14 +93,14 @@ class PenilaianSisterController extends Controller
         $request->validate([
             'dosen_id' => 'required|exists:dosen,id',
             'periode_id' => 'required|exists:periode,id',
-            'bidang_pendidikan' => 'required|in:1,2',
-            'bidang_penelitian' => 'required|in:1,2',
-            'bidang_pengabdian' => 'required|in:1,2',
-            'bidang_penunjang' => 'required|in:1,2',
+            'bidang_pendidikan' => 'required|in:1,2,3',
+            'bidang_penelitian' => 'required|in:1,2,3',
+            'bidang_pengabdian' => 'required|in:1,2,3',
+            'bidang_penunjang' => 'required|in:1,2,3',
             'total_nilai' => 'required|numeric',
         ]);
 
-        // Menyimpan Penilaian SISTER ke database
+        // Simpan Penilaian SISTER ke database
         PenilaianSISTER::create([
             'dosen_id' => $request->dosen_id,
             'periode_id' => $request->periode_id,
@@ -108,13 +108,14 @@ class PenilaianSisterController extends Controller
             'bidang_penelitian' => $request->bidang_penelitian,
             'bidang_pengabdian' => $request->bidang_pengabdian,
             'bidang_penunjang' => $request->bidang_penunjang,
-            'total_nilai' => $request->total_nilai,  // Menggunakan total_nilai
+            'total_nilai' => $request->total_nilai,  // Menggunakan hasil perhitungan dari frontend
         ]);
 
         // Redirect kembali ke halaman penilaian dengan pesan sukses
         return redirect()->route('admin.penilaiansister.index')
             ->with('success', 'Data SISTER berhasil ditambahkan!');
     }
+
 
     /**
      * Display the specified resource.

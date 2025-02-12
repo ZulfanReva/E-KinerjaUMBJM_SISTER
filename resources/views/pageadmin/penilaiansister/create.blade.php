@@ -89,6 +89,7 @@
                                         <option value="">Pilih Nilai</option>
                                         <option value="1">1 (Tidak Memenuhi)</option>
                                         <option value="2">2 (Memenuhi)</option>
+                                        <option value="3">3 (Memenuhi Lebih)</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -98,6 +99,7 @@
                                         <option value="">Pilih Nilai</option>
                                         <option value="1">1 (Tidak Memenuhi)</option>
                                         <option value="2">2 (Memenuhi)</option>
+                                        <option value="3">3 (Memenuhi Lebih)</option>
                                     </select>
                                 </div>
                             </div>
@@ -109,6 +111,7 @@
                                         <option value="">Pilih Nilai</option>
                                         <option value="1">1 (Tidak Memenuhi)</option>
                                         <option value="2">2 (Memenuhi)</option>
+                                        <option value="3">3 (Memenuhi Lebih)</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -118,10 +121,12 @@
                                         <option value="">Pilih Nilai</option>
                                         <option value="1">1 (Tidak Memenuhi)</option>
                                         <option value="2">2 (Memenuhi)</option>
+                                        <option value="3">3 (Memenuhi Lebih)</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
+
 
                         <!-- Kolom untuk Total Nilai SISTER -->
                         <div class="row mt-4">
@@ -179,16 +184,16 @@
                 // Inisialisasi Nilai Standar
                 const standar = {
                     "bidang-pendidikan": 2,
-                    "bidang-penelitian": 1,
+                    "bidang-penelitian": 2,
                     "bidang-pengabdian": 2,
-                    "bidang-penunjang": 1
+                    "bidang-penunjang": 2
                 };
 
-                // Inisialisasi Bobot
+                // Inisialisasi Bobot berdasarkan selisih (gap)
                 const bobot = {
-                    0: 5,
-                    "1": 4.5,
-                    "-1": 4
+                    "-1": 4, // Jika nilai 1 (kurang dari standar 2)
+                    "0": 4.5, // Jika nilai 2 (sesuai standar)
+                    "1": 5 // Jika nilai 3 (melebihi standar)
                 };
 
                 // Daftar Kriteria
@@ -296,6 +301,7 @@
                 });
             });
         </script>
+
 
 
         <script>
