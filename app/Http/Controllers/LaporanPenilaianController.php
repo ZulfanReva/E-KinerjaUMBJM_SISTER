@@ -20,42 +20,32 @@ class LaporanPenilaianController extends Controller
         // Ambil list periode untuk dropdown
         $periodeList = Periode::pluck('nama_periode', 'id')->toArray();
 
-        // Query penilaian perilaku kerja dengan filter jika ada
-        $penilaianPerilaku = PenilaianPerilakuKerja::query();
+        // Query PenilaianSISTER dengan filter jika ada
+        $penilaianSister = PenilaianSISTER::query();
 
         if ($request->filled('prodi')) {
-            $penilaianPerilaku->whereHas('dosen.prodi', function ($query) use ($request) {
+            $penilaianSister->whereHas('dosen.prodi', function ($query) use ($request) {
                 $query->where('id', $request->prodi);
             });
         }
 
         if ($request->filled('periode')) {
-            $penilaianPerilaku->whereHas('periode', function ($query) use ($request) {
+            $penilaianSister->whereHas('periode', function ($query) use ($request) {
                 $query->where('nama_periode', $request->periode);
             });
         }
 
         // Ambil data penilaian sesuai filter
-        $penilaianPerilaku = $penilaianPerilaku->with(['dosen', 'periode'])->get();
-
-        // Loop untuk menambahkan nilai (SISTER) berdasarkan periode yang sama
-        $penilaianPerilaku->each(function ($penilaian) {
-            // Cari nilai SISTER dengan periode yang sama
-            $nilaiSister = PenilaianSISTER::where('dosen_id', $penilaian->dosen_id)
-                ->where('periode_id', $penilaian->periode_id) // Cek periode yang sama
-                ->first();
-
-            // Tambahkan nilai SISTER ke objek penilaian
-            $penilaian->nilai_sister = $nilaiSister ? $nilaiSister->total_nilai : '-';
-        });
+        $penilaianSister = $penilaianSister->with(['dosen', 'periode'])->get();
 
         // Kirim data ke tampilan
         return view('pageadmin.laporanpenilaian.index', [
-            'penilaianPerilaku' => $penilaianPerilaku,
+            'penilaianSister' => $penilaianSister,
             'prodiList' => $prodiList,
             'periodeList' => $periodeList,
         ]);
     }
+
 
     public function show($id)
     {

@@ -93,100 +93,48 @@
                                 <table class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">
-                                                Nama Dosen</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">
-                                                NIDN</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">
-                                                Prodi</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                                Status</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                                Periode</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                                Tanggal Penilaian</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                                Nilai (SISTER)</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                                Nilai (PK)</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                                Total Nilai</th> <!-- Kolom Total Nilai -->
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                                Grade</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                                Dosen Penilai</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                                Aksi</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">Nama Dosen</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">NIDN</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">Prodi</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Status</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Periode</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Total Nilai</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Grade</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($penilaianPerilaku as $penilaian)
+                                        @forelse ($penilaianSister as $penilaian)
                                             <tr>
                                                 <td class="text-start">{{ $penilaian->dosen->nama_dosen }}</td>
                                                 <td class="text-start">{{ $penilaian->dosen->nidn }}</td>
-                                                <td class="text-start">{{ $penilaian->dosen->prodi->nama_prodi ?? '-' }}
-                                                </td>
-                                                <td class="text-center"><span
-                                                        class="badge bg-gradient-success">Aktif</span></td>
-                                                <td class="text-center">{{ $penilaian->periode->nama_periode ?? '-' }}
-                                                </td>
-                                                <td class="text-center">
-                                                    {{ $penilaian ? \Carbon\Carbon::parse($penilaian->tanggal_penilaian)->format('d-m-Y') : '-' }}
-                                                </td>
-                                                <td class="text-center">{{ $penilaian->nilai_sister }}</td>
-                                                <td class="text-center">{{ $penilaian->total_nilai }}</td>
+                                                <td class="text-start">{{ $penilaian->dosen->prodi->nama_prodi ?? '-' }}</td>
+                                                <td class="text-center"><span class="badge bg-gradient-success">Aktif</span></td>
+                                                <td class="text-center">{{ $penilaian->periode->nama_periode ?? '-' }}</td>
                                                 <td class="text-center">
                                                     @php
-                                                        // Pastikan nilai_sister dan total_nilai dikonversi ke tipe data float
-                                                        $nilaiSister = floatval($penilaian->nilai_sister);
-                                                        $nilaiPK = floatval($penilaian->total_nilai);
-
-                                                        // Hitung Total Nilai
-                                                        $totalNilai = 0.6 * $nilaiSister + 0.4 * $nilaiPK;
+                                                        // Mengambil nilai total dan memastikan tipe data float
+                                                        $nilaiSister = floatval($penilaian->total_nilai);
                                                     @endphp
-                                                    {{ number_format($totalNilai, 2) }}
+                                                    {{ number_format($nilaiSister, 2) }}
                                                 </td>
                                                 <td class="text-center">
                                                     @php
-                                                        $nilai = $totalNilai;
-                                                        $grade =
-                                                            $nilai >= 4.56
-                                                                ? 'A'
-                                                                : ($nilai >= 3.56
-                                                                    ? 'B'
-                                                                    : ($nilai >= 2.56
-                                                                        ? 'C'
-                                                                        : ($nilai >= 1.56
-                                                                            ? 'D'
-                                                                            : 'E')));
+                                                        // Menentukan grade berdasarkan nilai total
+                                                        $grade = $nilaiSister >= 4.56 ? 'A' : ($nilaiSister >= 3.56 ? 'B' : ($nilaiSister >= 2.56 ? 'C' : ($nilaiSister >= 1.56 ? 'D' : 'E')));
                                                     @endphp
                                                     {{ $grade }}
                                                 </td>
                                                 <td class="text-center">
-                                                    {{ $penilaian->user->dosen->nama_dosen ?? '-' }}</td>
-                                                <td class="text-center">
                                                     <!-- Tombol Cetak -->
-                                                    <a href="{{ route('admin.laporanpenilaian.show', $penilaian->id) }}"
-                                                        class="btn btn-sm bg-gradient-info me-2" title="Cetak">
+                                                    <a href="{{ route('admin.laporanpenilaian.show', $penilaian->id) }}" class="btn btn-sm bg-gradient-info me-2" title="Cetak">
                                                         <i class="fa fa-print" style="font-size:10px"></i> Cetak
                                                     </a>
                                                 </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="11" class="text-center text-secondary py-4">
+                                                <td colspan="8" class="text-center text-secondary py-4">
                                                     <h6 class="mb-0">BELUM ADA DATA PENILAIAN</h6>
                                                 </td>
                                             </tr>

@@ -127,7 +127,6 @@
                             </div>
                         </div>
 
-
                         <!-- Kolom untuk Total Nilai SISTER -->
                         <div class="row mt-4">
                             <h6 class="font-weight-bold text-info text-center">TOTAL NILAI</h6>
@@ -196,66 +195,82 @@
                     "1": 5 // Jika nilai 3 (melebihi standar)
                 };
 
-                // Daftar Kriteria
-                const kriteria = [
+                // Daftar Kriteria Core Factor dan Secondary Factor
+                const coreFactors = [
                     "bidang-pendidikan",
                     "bidang-penelitian",
-                    "bidang-pengabdian",
+                    "bidang-pengabdian"
+                ];
+                const secondaryFactors = [
                     "bidang-penunjang"
                 ];
 
                 // Perhitungan Nilai
-                let totalBobot = 0;
+                let totalCore = 0;
+                let totalSecondary = 0;
                 let semuaTerisi = true;
 
                 // Cek apakah semua dropdown sudah dipilih
-                for (const key of kriteria) {
+                [...coreFactors, ...secondaryFactors].forEach(function(key) {
                     const nilaiElement = document.getElementById(key);
                     if (!nilaiElement || nilaiElement.value === "") {
                         semuaTerisi = false;
-                        break;
                     }
-                }
+                });
 
                 // Jika semua dropdown terisi, hitung Total Nilai SISTER
                 if (semuaTerisi) {
-                    for (const key of kriteria) {
+                    // Hitung Nilai Core Factor (NCF)
+                    coreFactors.forEach(function(key) {
                         const nilaiElement = document.getElementById(key);
                         const nilaiInt = parseInt(nilaiElement.value);
                         const gap = nilaiInt - standar[key];
-
-                        // Pastikan gap ada dalam bobot
                         if (bobot[gap] !== undefined) {
-                            totalBobot += bobot[gap];
+                            totalCore += bobot[gap];
                         }
-                    }
+                    });
+                    const NCF = totalCore / coreFactors.length;
 
-                    // Hitung dan tampilkan nilai SISTER
-                    const nilaiSister = totalBobot / kriteria.length;
-                    const nilaiSisterRounded = parseFloat(nilaiSister.toFixed(2));
+                    // Hitung Nilai Secondary Factor (NSF)
+                    secondaryFactors.forEach(function(key) {
+                        const nilaiElement = document.getElementById(key);
+                        const nilaiInt = parseInt(nilaiElement.value);
+                        const gap = nilaiInt - standar[key];
+                        if (bobot[gap] !== undefined) {
+                            totalSecondary += bobot[gap];
+                        }
+                    });
+                    const NSF = totalSecondary / secondaryFactors.length;
 
-                    document.getElementById("total-nilai").value = nilaiSisterRounded;
-                    document.getElementById("total-nilai-input").value = nilaiSisterRounded;
+                    // Hitung Total Nilai (70% NCF + 30% NSF)
+                    const totalNilai = (0.7 * NCF) + (0.3 * NSF);
+                    const totalNilaiRounded = parseFloat(totalNilai.toFixed(2));
+
+                    // Tampilkan Total Nilai
+                    document.getElementById("total-nilai").value = totalNilaiRounded;
+
+                    // Isi input hidden untuk total_nilai
+                    document.getElementById("total-nilai-input").value = totalNilaiRounded;
 
                     return true;
                 } else {
                     // Kosongkan Total Nilai SISTER jika belum semua terisi
-                    document.getElementById("nilai-sister-value").value = "";
-                    document.getElementById("nilai-sister-input").value = "";
+                    document.getElementById("total-nilai").value = "";
+                    document.getElementById("total-nilai-input").value = "";
                     return false;
                 }
             }
 
             // Tambahkan event listener ke semua dropdown untuk perhitungan real-time
             document.addEventListener('DOMContentLoaded', function() {
-                const kriteria = [
+                const allFactors = [
                     "bidang-pendidikan",
                     "bidang-penelitian",
                     "bidang-pengabdian",
                     "bidang-penunjang"
                 ];
 
-                kriteria.forEach(function(id) {
+                allFactors.forEach(function(id) {
                     const dropdown = document.getElementById(id);
                     if (dropdown) {
                         dropdown.addEventListener('change', hitungNilaiSISTER);
@@ -263,26 +278,15 @@
                 });
 
                 // Validasi form sebelum submit
-                const form = document.getElementById("penilaian-bkd-form");
+                const form = document.getElementById("formDataSISTER");
                 form.addEventListener("submit", function(e) {
-                    const kriteria = [
-                        "bidang-pendidikan",
-                        "bidang-penelitian",
-                        "bidang-pengabdian",
-                        "bidang-penunjang"
-                    ];
-
-                    // Cek apakah semua dropdown terisi
-                    const semuaTerisi = kriteria.every(id =>
-                        document.getElementById(id).value !== ""
-                    );
-
-                    if (!semuaTerisi) {
+                    const allFilled = allFactors.every(id => document.getElementById(id).value !== "");
+                    if (!allFilled) {
                         e.preventDefault();
                         alert("Harap lengkapi semua kolom!");
 
                         // Tandai field yang kosong
-                        kriteria.forEach(id => {
+                        allFactors.forEach(id => {
                             const dropdown = document.getElementById(id);
                             if (dropdown.value === "") {
                                 dropdown.classList.add('is-invalid');
@@ -301,8 +305,6 @@
                 });
             });
         </script>
-
-
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {

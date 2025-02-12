@@ -22,8 +22,8 @@ class PenilaianSisterController extends Controller
         // Ambil list Prodi untuk dropdown
         $prodiList = Prodi::all();
 
-        // Ambil list periode untuk dropdown
-        $periodeList = Periode::pluck('nama_periode', 'id')->toArray();
+        // Ambil list periode dengan objek lengkap untuk dropdown
+        $periodeList = Periode::all();  // Ubah ini menjadi mengambil semua objek Periode
 
         // Query penilaian SISTER dengan filter jika ada
         $penilaianSister = PenilaianSister::query();
@@ -62,15 +62,15 @@ class PenilaianSisterController extends Controller
         // Gunakan pagination untuk hasil query dosen
         $dosenPengajar = $dosenPengajar->paginate(10, ['*'], 'dosenPengajar_page');
 
-
         // Kirim data ke tampilan
         return view('pageadmin.penilaiansister.index', [
             'penilaianSister' => $penilaianSister,
             'dosenPengajar' => $dosenPengajar, // Dosen Pengajar dikembalikan
             'prodiList' => $prodiList,
-            'periodeList' => $periodeList,
+            'periodeList' => $periodeList, // Kirim objek lengkap Periode ke tampilan
         ]);
     }
+
 
 
     /**
@@ -115,6 +115,7 @@ class PenilaianSisterController extends Controller
         return redirect()->route('admin.penilaiansister.index')
             ->with('success', 'Data SISTER berhasil ditambahkan!');
     }
+
 
 
     /**

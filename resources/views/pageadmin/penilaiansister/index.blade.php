@@ -50,7 +50,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="periode" class="form-label">Periode</label>
                                 <select class="form-select" id="periode" name="periode">
                                     <option value="">SEMUA PERIODE</option>
@@ -58,7 +58,7 @@
                                         <option value="{{ $id }}">{{ $nama_periode }}</option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> --}}
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                 <button type="submit" class="btn bg-gradient-info">Filter</button>
@@ -144,12 +144,12 @@
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Status</th>
-                                            <th
-                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Periode</th>
-                                            <th
-                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Nilai (SISTER)</th>
+                                            @foreach ($periodeList as $periode)
+                                                <th
+                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    {{ $periode->nama_periode }}
+                                                </th>
+                                            @endforeach
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Aksi</th>
@@ -175,36 +175,49 @@
                                                         {{ ucfirst($dosen->status) }}
                                                     </span>
                                                 </td>
+
+                                                @foreach ($periodeList as $periode)
+                                                    @php
+                                                        $penilaian = $dosen->penilaianSISTER
+                                                            ->where('periode_id', $periode->id)
+                                                            ->first();
+                                                    @endphp
+                                                    <td class="align-middle text-center">
+                                                        @if ($penilaian)
+                                                            <span>{{ $penilaian->total_nilai }}</span>
+                                                        @else
+                                                            <span>-</span>
+                                                        @endif
+                                                    </td>
+                                                @endforeach
+
                                                 <td class="align-middle text-center">
-                                                    @if ($dosen->penilaianSISTER->isNotEmpty())
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            {{ $dosen->penilaianSISTER->first()->periode->nama_periode ?? '-' }}
-                                                        </p>
-                                                    @else
-                                                        <p class="text-xs font-weight-bold mb-0">-</p>
-                                                    @endif
-                                                </td>
-                                                <td class="align-middle text-center">
-                                                    @if ($dosen->penilaianSISTER->isNotEmpty())
-                                                        <span>{{ $dosen->penilaianSISTER->first()->total_nilai ?? '-' }}</span>
-                                                    @else
-                                                        <span>-</span>
-                                                    @endif
-                                                </td>
-                                                <td class="align-middle text-center">
-                                                    @if ($dosen->status === 'Nonaktif')
-                                                        <!-- Jika status dosen Nonaktif, tampilkan tombol disabled -->
+                                                    @php
+                                                        $jumlahPeriode = $periodeList->count();
+                                                        $jumlahPenilaian = $dosen->penilaianSISTER->count();
+                                                        $isActive = $dosen->status === 'Aktif';
+                                                        $hasAllPenilaian = $jumlahPeriode === $jumlahPenilaian;
+                                                    @endphp
+
+                                                    @if (!$isActive)
+                                                        <!-- Jika dosen tidak aktif -->
                                                         <button class="btn bg-gradient-secondary btn-sm mb-0" disabled>
-                                                            Tidak Dapat Dinilai
+                                                            Nilai
+                                                        </button>
+                                                    @elseif ($hasAllPenilaian)
+                                                        <!-- Jika dosen sudah dinilai di semua periode -->
+                                                        <button class="btn bg-gradient-success btn-sm mb-0" disabled>
+                                                            SUDAH DINILAI
                                                         </button>
                                                     @elseif ($dosen->penilaianSISTER->isNotEmpty())
-                                                        <!-- Jika sudah ada penilaian SISTER, tampilkan tombol Sudah Dinilai -->
-                                                        <button class="btn bg-gradient-success btn-sm mb-0" disabled>
-                                                            Sudah Dinilai
-                                                        </button>
+                                                        <!-- Jika dosen sudah punya penilaian di periode tertentu -->
+                                                        <a class="btn bg-gradient-danger btn-sm mb-0"
+                                                            href="{{ route('admin.penilaiansister.create', ['dosen_id' => $dosen->id]) }}">
+                                                            Tambah Nilai
+                                                        </a>
                                                     @else
-                                                        <!-- Jika belum ada penilaian SISTER, tampilkan tombol Nilai -->
-                                                        <a class="badge bg-gradient-danger btn-sm mb-0"
+                                                        <!-- Jika dosen aktif dan belum ada penilaian -->
+                                                        <a class="btn bg-gradient-danger btn-sm mb-0"
                                                             href="{{ route('admin.penilaiansister.create', ['dosen_id' => $dosen->id]) }}">
                                                             Nilai
                                                         </a>
@@ -213,13 +226,15 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="7" class="text-center text-secondary py-4">
+                                                <td colspan="{{ 4 + $periodeList->count() }}"
+                                                    class="text-center text-secondary py-4">
                                                     <h6 class="mb-0">BELUM ADA DATA SISTER</h6>
                                                 </td>
                                             </tr>
                                         @endforelse
                                     </tbody>
                                 </table>
+
 
                                 <!-- Tambahkan Pagination -->
                                 <section>
