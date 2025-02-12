@@ -81,7 +81,8 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        Apakah Anda yakin ingin mereset semua data filter? Pastikan kamu sudah merekap laporan penilaian yang sudah ada sebelum memulai penilaian periode baru
+                        Apakah Anda yakin ingin mereset semua data filter? Pastikan kamu sudah merekap laporan penilaian
+                        yang sudah ada sebelum memulai penilaian periode baru
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Batal</button>
@@ -169,7 +170,10 @@
                                                         {{ $dosen->prodi->nama_prodi ?? '-' }}</p>
                                                 </td>
                                                 <td class="align-middle text-center text-sm">
-                                                    <span class="badge bg-gradient-success btn-sm mb-0">Aktif</span>
+                                                    <span
+                                                        class="badge bg-gradient-{{ $dosen->status === 'Aktif' ? 'success' : 'secondary' }} btn-sm mb-0">
+                                                        {{ ucfirst($dosen->status) }}
+                                                    </span>
                                                 </td>
                                                 <td class="align-middle text-center">
                                                     @if ($dosen->penilaianSISTER->isNotEmpty())
@@ -188,7 +192,12 @@
                                                     @endif
                                                 </td>
                                                 <td class="align-middle text-center">
-                                                    @if ($dosen->penilaianSISTER->isNotEmpty())
+                                                    @if ($dosen->status === 'Nonaktif')
+                                                        <!-- Jika status dosen Nonaktif, tampilkan tombol disabled -->
+                                                        <button class="btn bg-gradient-secondary btn-sm mb-0" disabled>
+                                                            Tidak Dapat Dinilai
+                                                        </button>
+                                                    @elseif ($dosen->penilaianSISTER->isNotEmpty())
                                                         <!-- Jika sudah ada penilaian SISTER, tampilkan tombol Sudah Dinilai -->
                                                         <button class="btn bg-gradient-success btn-sm mb-0" disabled>
                                                             Sudah Dinilai
