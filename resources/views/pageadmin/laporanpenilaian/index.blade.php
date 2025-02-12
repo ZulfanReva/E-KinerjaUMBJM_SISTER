@@ -93,14 +93,30 @@
                                 <table class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">Nama Dosen</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">NIDN</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">Prodi</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Status</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Periode</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Total Nilai</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Grade</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Aksi</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">
+                                                Nama Dosen</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">
+                                                NIDN</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">
+                                                Prodi</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                                Status</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                                Periode</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                                Total Nilai</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                                Grade</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                                Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -108,9 +124,12 @@
                                             <tr>
                                                 <td class="text-start">{{ $penilaian->dosen->nama_dosen }}</td>
                                                 <td class="text-start">{{ $penilaian->dosen->nidn }}</td>
-                                                <td class="text-start">{{ $penilaian->dosen->prodi->nama_prodi ?? '-' }}</td>
-                                                <td class="text-center"><span class="badge bg-gradient-success">Aktif</span></td>
-                                                <td class="text-center">{{ $penilaian->periode->nama_periode ?? '-' }}</td>
+                                                <td class="text-start">{{ $penilaian->dosen->prodi->nama_prodi ?? '-' }}
+                                                </td>
+                                                <td class="text-center"><span
+                                                        class="badge bg-gradient-success">Aktif</span></td>
+                                                <td class="text-center">{{ $penilaian->periode->nama_periode ?? '-' }}
+                                                </td>
                                                 <td class="text-center">
                                                     @php
                                                         // Mengambil nilai total dan memastikan tipe data float
@@ -121,13 +140,23 @@
                                                 <td class="text-center">
                                                     @php
                                                         // Menentukan grade berdasarkan nilai total
-                                                        $grade = $nilaiSister >= 4.56 ? 'A' : ($nilaiSister >= 3.56 ? 'B' : ($nilaiSister >= 2.56 ? 'C' : ($nilaiSister >= 1.56 ? 'D' : 'E')));
+                                                        $grade =
+                                                            $nilaiSister >= 4.75
+                                                                ? 'A'
+                                                                : ($nilaiSister >= 3.75
+                                                                    ? 'B'
+                                                                    : ($nilaiSister >= 2.75
+                                                                        ? 'C'
+                                                                        : ($nilaiSister >= 1.75
+                                                                            ? 'D'
+                                                                            : 'E')));
                                                     @endphp
                                                     {{ $grade }}
                                                 </td>
                                                 <td class="text-center">
                                                     <!-- Tombol Cetak -->
-                                                    <a href="{{ route('admin.laporanpenilaian.show', $penilaian->id) }}" class="btn btn-sm bg-gradient-info me-2" title="Cetak">
+                                                    <a href="{{ route('admin.laporanpenilaian.show', $penilaian->id) }}"
+                                                        class="btn btn-sm bg-gradient-info me-2" title="Cetak">
                                                         <i class="fa fa-print" style="font-size:10px"></i> Cetak
                                                     </a>
                                                 </td>

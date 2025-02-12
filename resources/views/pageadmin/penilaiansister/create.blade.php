@@ -188,11 +188,12 @@
                     "bidang-penunjang": 2
                 };
 
-                // Inisialisasi Bobot berdasarkan selisih (gap)
+                // Inisialisasi Bobot berdasarkan selisih (gap) dengan penyesuaian
                 const bobot = {
-                    "-1": 4, // Jika nilai 1 (kurang dari standar 2)
-                    "0": 4.5, // Jika nilai 2 (sesuai standar)
-                    "1": 5 // Jika nilai 3 (melebihi standar)
+                    "-2": 1, // Jika nilai 1 (sangat kurang dari standar)
+                    "-1": 2, // Jika nilai 2 (kurang dari standar)
+                    "0": 4.5, // Jika nilai 3 (sesuai standar)
+                    "1": 5, // Jika nilai 4 (melebihi standar)
                 };
 
                 // Daftar Kriteria Core Factor dan Secondary Factor
@@ -246,11 +247,14 @@
                     const totalNilai = (0.7 * NCF) + (0.3 * NSF);
                     const totalNilaiRounded = parseFloat(totalNilai.toFixed(2));
 
-                    // Tampilkan Total Nilai
-                    document.getElementById("total-nilai").value = totalNilaiRounded;
-
-                    // Isi input hidden untuk total_nilai
-                    document.getElementById("total-nilai-input").value = totalNilaiRounded;
+                    // Jika total nilai lebih rendah dari 2, tetapkan grade E
+                    if (totalNilaiRounded < 2) {
+                        document.getElementById("total-nilai").value = "0"; // Atau beri nilai 0 sebagai penanda
+                        document.getElementById("total-nilai-input").value = "0";
+                    } else {
+                        document.getElementById("total-nilai").value = totalNilaiRounded;
+                        document.getElementById("total-nilai-input").value = totalNilaiRounded;
+                    }
 
                     return true;
                 } else {
