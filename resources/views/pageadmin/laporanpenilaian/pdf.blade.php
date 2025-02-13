@@ -119,14 +119,20 @@
 
         <h5>Kategori dan Reward/Sanksi:</h5>
         <ul style="text-align: justify">
-            <li><b>Grade A (Sangat Baik)</b>: Pujian dalam forum rapat resmi, Loncat jabatan fungsional atau kenaikan
-                pangkat istimewa, Tugas belajar atau studi lanjut di luar negeri.</li>
-            <li><b>Grade B (Baik)</b>: Pujian dalam forum rapat resmi, Sertifikat keberhasilan, Pembebasan SPP untuk
-                pendidikan lanjutan.</li>
-            <li><b>Grade C (Cukup)</b>: Pujian dalam forum rapat resmi, Teguran lisan, Teguran tertulis.</li>
-            <li><b>Grade D (Kurang)</b>: Teguran lisan atau tertulis, Peringatan keras, Penundaan kenaikan gaji berkala.
-            </li>
-            <li><b>Grade E (Sangat Kurang)</b>: Peringatan keras, Pembebasan tugas, Penundaan kenaikan gaji berkala,
+            <li><b>Grade A (Sangat Baik)</b>: Pujian dalam forum rapat resmi, Sertifikat keberhasilan, Piagam
+                penghargaan,
+                Tugas belajar atau studi lanjut (di dalam/luar negeri) atas biaya universitas,
+                Loncat jabatan fungsional atau kenaikan pangkat istimewa, Publikasi atas biaya universitas.</li>
+            <li><b>Grade B (Baik)</b>: Pujian dalam forum rapat resmi, Ucapan terima kasih secara formal,
+                Sertifikat keberhasilan, Pembebasan SPP untuk pendidikan lanjutan,
+                Tugas belajar (tergantung keputusan universitas).</li>
+            <li><b>Grade C (Cukup)</b>: Pujian dalam forum rapat resmi (hanya jika dianggap cukup memadai),
+                Teguran lisan (jika dianggap perlu perbaikan),
+                Teguran tertulis (untuk dorongan peningkatan kinerja ke depannya).</li>
+            <li><b>Grade D (Kurang)</b>: Teguran lisan atau tertulis, Peringatan keras,
+                Penundaan kenaikan gaji berkala, Penundaan kenaikan pangkat.</li>
+            <li><b>Grade E (Sangat Kurang)</b>: Peringatan keras, Pembebasan tugas,
+                Penundaan kenaikan gaji berkala, Penundaan kenaikan pangkat,
                 Pemberhentian jika tidak ada perbaikan signifikan.</li>
         </ul>
 

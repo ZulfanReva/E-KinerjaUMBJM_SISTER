@@ -73,14 +73,19 @@ class LaporanPenilaianController extends Controller
             if ($grade === 'A') {
                 $kesimpulan = [
                     'Pujian dalam forum rapat resmi',
-                    'Loncat jabatan fungsional atau kenaikan pangkat istimewa *Syarat & Ketentuan oleh SDI',
-                    'Tugas belajar atau studi lanjut di luar negeri atas biaya universitas *Syarat & Ketentuan oleh SDI',
+                    'Sertifikat keberhasilan',
+                    'Piagam penghargaan',
+                    'Tugas belajar atau studi lanjut (di dalam/luar negeri) atas biaya universitas',
+                    'Loncat jabatan fungsional atau kenaikan pangkat istimewa',
+                    'Publikasi atas biaya universitas',
                 ];
             } elseif ($grade === 'B') {
                 $kesimpulan = [
                     'Pujian dalam forum rapat resmi',
-                    'Sertifikat keberhasilan atau ucapan terima kasih secara formal',
-                    'Pembebasan SPP untuk pendidikan lanjutan di dalam negeri *Syarat & Ketentuan oleh SDI',
+                    'Ucapan terima kasih secara formal',
+                    'Sertifikat keberhasilan',
+                    'Pembebasan SPP untuk pendidikan lanjutan',
+                    'Tugas belajar (tergantung keputusan universitas)',
                 ];
             } elseif ($grade === 'C') {
                 $kesimpulan = [
@@ -92,14 +97,16 @@ class LaporanPenilaianController extends Controller
                 $kesimpulan = [
                     'Teguran lisan atau tertulis',
                     'Peringatan keras',
-                    'Penundaan kenaikan gaji berkala *Syarat & Ketentuan oleh SDI',
+                    'Penundaan kenaikan gaji berkala',
+                    'Penundaan kenaikan pangkat',
                 ];
             } else {
                 $kesimpulan = [
                     'Peringatan keras',
-                    'Pembebasan tugas *Syarat & Ketentuan oleh SDI',
+                    'Pembebasan tugas',
                     'Penundaan kenaikan gaji berkala',
-                    'Pemberhentian jika tidak ada perbaikan signifikan *Syarat & Ketentuan oleh SDI',
+                    'Penundaan kenaikan pangkat',
+                    'Pemberhentian jika tidak ada perbaikan signifikan',
                 ];
             }
 
