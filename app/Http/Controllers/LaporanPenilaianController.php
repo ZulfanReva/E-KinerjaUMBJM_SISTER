@@ -148,11 +148,14 @@ class LaporanPenilaianController extends Controller
                 $nilaiSister >= 4.75 ? 'A' : ($nilaiSister >= 3.75 ? 'B' : ($nilaiSister >= 2.75 ? 'C' : ($nilaiSister >= 1.75 ? 'D' : 'E')));
         });
 
-        // Sorting berdasarkan nilai total dan grade
-        $gradeOrder = ['A' => 1, 'B' => 2, 'C' => 3, 'D' => 4, 'E' => 5];
-        $penilaianSister = $penilaianSister->sortByDesc(function ($penilaian) use ($gradeOrder) {
-            return [$penilaian->total_nilai, $gradeOrder[$penilaian->grade]];
-        });
+        // Pisahkan data berdasarkan grade
+        $grades = ['A', 'B', 'C', 'D', 'E'];
+        $groupedPenilaian = [];
+        foreach ($grades as $grade) {
+            $groupedPenilaian[$grade] = $penilaianSister->filter(function ($penilaian) use ($grade) {
+                return $penilaian->grade === $grade;
+            });
+        }
 
         // Encode gambar kop surat dan tanda tangan
         $kopImage = base64_encode(file_get_contents(public_path('assets/foto/kopsurat.png')));
@@ -160,6 +163,7 @@ class LaporanPenilaianController extends Controller
 
         $pdf = PDF::loadView('pageadmin.laporanpenilaian.pdf', [
             'penilaianSister' => $penilaianSister,
+            'groupedPenilaian' => $groupedPenilaian, // Kirim data yang sudah dikelompokkan
             'exportDate' => Carbon::now()->format('d-m-Y H:i:s'),
             'kopBase64' => 'data:image/png;base64,' . $kopImage,
             'ttdBase64' => 'data:image/png;base64,' . $ttdImage,
