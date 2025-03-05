@@ -180,6 +180,6 @@ class LaporanPenilaianController extends Controller
         $pdf->getDomPDF()->set_option('isRemoteEnabled', true);
         $pdf->getDomPDF()->set_option('isHtml5ParserEnabled', true);
 
-        return $pdf->download('laporan-penilaian-sister-' . Carbon::now()->format('Y-m-d') . '.pdf');
+        return $pdf->download('Rekap-LaporanPenilaianSister-' . Carbon::now()->format('Y-m-d') . '.pdf');
     }
 }

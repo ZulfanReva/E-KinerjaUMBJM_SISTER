@@ -9,6 +9,12 @@
         <img src="assets/foto/cover1.png" alt="Background Image 1" class="hero-bg" id="backgroundImage1">
         <img src="assets/foto/cover1.png" alt="Background Image 2" class="hero-bg" id="backgroundImage2">
     </div>
+    
+    @if (session('warning'))
+        <div class="alert alert-warning">
+            {{ session('warning') }}
+        </div>
+    @endif
 
     <!-- Form Login -->
     <div class="wrapper">
@@ -129,7 +135,7 @@
                 // Menampilkan alert
                 if (confirm(
                         "Silakan hubungi admin untuk mengatur ulang kata sandi. Klik OK untuk melanjutkan ke WhatsApp."
-                        )) {
+                    )) {
                     // Mengarahkan pengguna ke WhatsApp
                     window.location.href = "https://wa.me/+6287812741357";
                 }

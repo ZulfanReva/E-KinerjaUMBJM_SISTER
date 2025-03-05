@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session; // Tambahkan ini
 
 class Authenticate
 {
@@ -20,6 +21,8 @@ class Authenticate
     {
         // Cek apakah user sudah login
         if (!Auth::check()) {
+            // Tambahkan pesan flash menggunakan Session facade
+            Session::flash('warning', 'Sesi Anda telah kedaluwarsa. Silakan login kembali.');
             return redirect()->route('masuk'); // Arahkan ke halaman login jika belum login
         }
 
