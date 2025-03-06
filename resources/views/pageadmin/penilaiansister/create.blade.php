@@ -249,8 +249,8 @@
                     });
                     const NSF = totalSecondary / secondaryFactors.length;
 
-                    // Hitung Total Nilai (70% NCF + 30% NSF)
-                    const totalNilai = (0.7 * NCF) + (0.3 * NSF);
+                    // Proporsi : 75% Core, 25% Secondary
+                    const totalNilai = (0.75 * NCF) + (0.25 * NSF);
                     const totalNilaiRounded = parseFloat(totalNilai.toFixed(2));
 
                     // Tentukan Grade
