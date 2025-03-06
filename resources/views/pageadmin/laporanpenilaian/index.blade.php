@@ -140,16 +140,15 @@
                                                 <td class="text-center">
                                                     @php
                                                         // Menentukan grade berdasarkan nilai total
-                                                        $grade =
-                                                            $nilaiSister >= 4.75
-                                                                ? 'A'
-                                                                : ($nilaiSister >= 3.75
+                                                        $grade = ((($nilaiSister >= 4.2
+                                                                        ? 'A'
+                                                                        : $nilaiSister >= 3.5)
                                                                     ? 'B'
-                                                                    : ($nilaiSister >= 2.75
-                                                                        ? 'C'
-                                                                        : ($nilaiSister >= 1.75
-                                                                            ? 'D'
-                                                                            : 'E')));
+                                                                    : $nilaiSister >= 2.7)
+                                                                ? 'C'
+                                                                : $nilaiSister >= 1.8)
+                                                            ? 'D'
+                                                            : 'E';
                                                     @endphp
                                                     {{ $grade }}
                                                 </td>

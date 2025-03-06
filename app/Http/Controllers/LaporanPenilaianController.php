@@ -63,10 +63,7 @@ class LaporanPenilaianController extends Controller
             $nilaiSisterValue = floatval($penilaian->total_nilai ?? 0);
 
             // Tentukan grade berdasarkan nilai total
-            $grade = $nilaiSisterValue >= 4.75 ? 'A' : ($nilaiSisterValue >= 3.75
-                ? 'B' : ($nilaiSisterValue >= 2.75
-                    ? 'C' : ($nilaiSisterValue >= 1.75
-                        ? 'D' : 'E')));
+            $grade = $nilaiSisterValue >= 4.2 ? 'A' : ($nilaiSisterValue >= 3.5 ? 'B' : ($nilaiSisterValue >= 2.7 ? 'C' : ($nilaiSisterValue >= 1.8 ? 'D' : 'E')));
 
             // Tentukan kesimpulan berdasarkan grade
             $kesimpulan = [];

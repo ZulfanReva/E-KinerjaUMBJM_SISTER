@@ -188,12 +188,18 @@
                     "bidang-penunjang": 2
                 };
 
-                // Inisialisasi Bobot berdasarkan selisih (gap) dengan penyesuaian
-                const bobot = {
-                    "-2": 1, // Jika nilai 1 (sangat kurang dari standar)
-                    "-1": 2, // Jika nilai 2 (kurang dari standar)
-                    "0": 4.5, // Jika nilai 3 (sesuai standar)
-                    "1": 5, // Jika nilai 4 (melebihi standar)
+                // Inisialisasi Bobot berdasarkan selisih (gap)
+                // Bobot Core: Pola selisih 2 untuk dominasi Core Factors
+                const bobotCore = {
+                    "-1": 1, // Tidak memenuhi
+                    "0": 3, // Memenuhi
+                    "1": 5 // Memenuhi berlebih
+                };
+                // Bobot Secondary: Disesuaikan agar total maksimum 4.7, Core tetap dominan
+                const bobotSecondary = {
+                    "-1": 1, // Tidak memenuhi
+                    "0": 3, // Memenuhi
+                    "1": 4 // Memenuhi berlebih
                 };
 
                 // Daftar Kriteria Core Factor dan Secondary Factor
@@ -226,8 +232,8 @@
                         const nilaiElement = document.getElementById(key);
                         const nilaiInt = parseInt(nilaiElement.value);
                         const gap = nilaiInt - standar[key];
-                        if (bobot[gap] !== undefined) {
-                            totalCore += bobot[gap];
+                        if (bobotCore[gap] !== undefined) {
+                            totalCore += bobotCore[gap];
                         }
                     });
                     const NCF = totalCore / coreFactors.length;
@@ -237,8 +243,8 @@
                         const nilaiElement = document.getElementById(key);
                         const nilaiInt = parseInt(nilaiElement.value);
                         const gap = nilaiInt - standar[key];
-                        if (bobot[gap] !== undefined) {
-                            totalSecondary += bobot[gap];
+                        if (bobotSecondary[gap] !== undefined) {
+                            totalSecondary += bobotSecondary[gap];
                         }
                     });
                     const NSF = totalSecondary / secondaryFactors.length;
@@ -247,20 +253,30 @@
                     const totalNilai = (0.7 * NCF) + (0.3 * NSF);
                     const totalNilaiRounded = parseFloat(totalNilai.toFixed(2));
 
-                    // Jika total nilai lebih rendah dari 2, tetapkan grade E
-                    if (totalNilaiRounded < 2) {
-                        document.getElementById("total-nilai").value = "0"; // Atau beri nilai 0 sebagai penanda
+                    // Tentukan Grade
+                    const grade =
+                        totalNilaiRounded >= 4.2 ? 'A' :
+                        totalNilaiRounded >= 3.5 ? 'B' :
+                        totalNilaiRounded >= 2.7 ? 'C' :
+                        totalNilaiRounded >= 1.8 ? 'D' : 'E';
+
+                    // Jika total nilai lebih rendah dari 1.8, tetapkan nilai 0 (opsional, sesuai kebutuhan)
+                    if (totalNilaiRounded < 1.8) {
+                        document.getElementById("total-nilai").value = "0";
                         document.getElementById("total-nilai-input").value = "0";
+                        document.getElementById("grade-display").textContent = "Grade: E";
                     } else {
                         document.getElementById("total-nilai").value = totalNilaiRounded;
                         document.getElementById("total-nilai-input").value = totalNilaiRounded;
+                        document.getElementById("grade-display").textContent = "Grade: " + grade;
                     }
 
                     return true;
                 } else {
-                    // Kosongkan Total Nilai SISTER jika belum semua terisi
+                    // Kosongkan Total Nilai SISTER dan Grade jika belum semua terisi
                     document.getElementById("total-nilai").value = "";
                     document.getElementById("total-nilai-input").value = "";
+                    document.getElementById("grade-display").textContent = "Grade: -";
                     return false;
                 }
             }
@@ -306,6 +322,12 @@
                         e.preventDefault();
                         alert("Gagal menghitung Total Nilai SISTER!");
                     }
+                });
+
+                // Ganti tombol submit biasa dengan event listener
+                const submitBtn = document.getElementById("submitBtn");
+                submitBtn.addEventListener("click", function() {
+                    form.submit();
                 });
             });
         </script>

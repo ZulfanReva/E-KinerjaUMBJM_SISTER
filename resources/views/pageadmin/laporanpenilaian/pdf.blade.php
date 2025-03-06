@@ -181,11 +181,11 @@
                     @php
                         $nomorUrut = 1;
                         $filteredData = $penilaianSister->filter(function ($penilaian) use ($grade) {
-                            return ($penilaian->total_nilai >= 4.75 && $grade === 'A') ||
-                                ($penilaian->total_nilai >= 3.75 && $penilaian->total_nilai < 4.75 && $grade === 'B') ||
-                                ($penilaian->total_nilai >= 2.75 && $penilaian->total_nilai < 3.75 && $grade === 'C') ||
-                                ($penilaian->total_nilai >= 1.75 && $penilaian->total_nilai < 2.75 && $grade === 'D') ||
-                                ($penilaian->total_nilai < 1.75 && $grade === 'E');
+                            return ($penilaian->total_nilai >= 4.2 && $grade === 'A') ||
+                                ($penilaian->total_nilai >= 3.5 && $penilaian->total_nilai < 4.2 && $grade === 'B') ||
+                                ($penilaian->total_nilai >= 2.7 && $penilaian->total_nilai < 3.5 && $grade === 'C') ||
+                                ($penilaian->total_nilai >= 1.8 && $penilaian->total_nilai < 2.7 && $grade === 'D') ||
+                                ($penilaian->total_nilai < 1.8 && $grade === 'E');
                         });
                     @endphp
                     @forelse($filteredData as $penilaian)
