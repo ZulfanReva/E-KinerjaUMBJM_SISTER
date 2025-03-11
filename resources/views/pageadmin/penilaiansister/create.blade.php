@@ -188,29 +188,16 @@
                     "bidang-penunjang": 2
                 };
 
-                // Inisialisasi Bobot berdasarkan selisih (gap)
-                // Bobot Core: Pola selisih 2 untuk dominasi Core Factors
-                const bobotCore = {
+                // Inisialisasi Bobot Tunggal berdasarkan selisih (gap) untuk Core dan Secondary
+                const bobot = {
                     "-1": 1, // Tidak memenuhi
                     "0": 3, // Memenuhi
                     "1": 5 // Memenuhi berlebih
                 };
-                // Bobot Secondary: Disesuaikan agar total maksimum 4.7, Core tetap dominan
-                const bobotSecondary = {
-                    "-1": 1, // Tidak memenuhi
-                    "0": 3, // Memenuhi
-                    "1": 4 // Memenuhi berlebih
-                };
 
                 // Daftar Kriteria Core Factor dan Secondary Factor
-                const coreFactors = [
-                    "bidang-pendidikan",
-                    "bidang-penelitian",
-                    "bidang-pengabdian"
-                ];
-                const secondaryFactors = [
-                    "bidang-penunjang"
-                ];
+                const coreFactors = ["bidang-pendidikan", "bidang-penelitian", "bidang-pengabdian"];
+                const secondaryFactors = ["bidang-penunjang"];
 
                 // Perhitungan Nilai
                 let totalCore = 0;
@@ -232,8 +219,8 @@
                         const nilaiElement = document.getElementById(key);
                         const nilaiInt = parseInt(nilaiElement.value);
                         const gap = nilaiInt - standar[key];
-                        if (bobotCore[gap] !== undefined) {
-                            totalCore += bobotCore[gap];
+                        if (bobot[gap] !== undefined) {
+                            totalCore += bobot[gap];
                         }
                     });
                     const NCF = totalCore / coreFactors.length;
@@ -243,37 +230,39 @@
                         const nilaiElement = document.getElementById(key);
                         const nilaiInt = parseInt(nilaiElement.value);
                         const gap = nilaiInt - standar[key];
-                        if (bobotSecondary[gap] !== undefined) {
-                            totalSecondary += bobotSecondary[gap];
+                        if (bobot[gap] !== undefined) {
+                            totalSecondary += bobot[gap];
                         }
                     });
                     const NSF = totalSecondary / secondaryFactors.length;
 
-                    // Proporsi : 75% Core, 25% Secondary
+                    // Proporsi: 75% Core, 25% Secondary
                     const totalNilai = (0.75 * NCF) + (0.25 * NSF);
-                    const totalNilaiRounded = parseFloat(totalNilai.toFixed(2));
+                    // Format nilai: bulat jika integer, 1 desimal jika tidak
+                    const formattedTotalNilai = Number.isInteger(totalNilai) ? totalNilai : totalNilai.toFixed(1);
 
-                    // Tentukan Grade
+                    // Tentukan Grade dengan batas baru untuk skala 1-5
+                    const totalNilaiRounded = parseFloat(totalNilai.toFixed(2)); // Untuk grade tetap gunakan 2 desimal internal
                     const grade =
                         totalNilaiRounded >= 4.2 ? 'A' :
-                        totalNilaiRounded >= 3.5 ? 'B' :
-                        totalNilaiRounded >= 2.7 ? 'C' :
-                        totalNilaiRounded >= 1.8 ? 'D' : 'E';
+                        totalNilaiRounded >= 3.4 ? 'B' :
+                        totalNilaiRounded >= 2.6 ? 'C' :
+                        totalNilaiRounded >= 1.8 ? 'D' :
+                        'E';
 
-                    // Jika total nilai lebih rendah dari 1.8, tetapkan nilai 0 (opsional, sesuai kebutuhan)
+                    // Jika total nilai lebih rendah dari 1.8, tetapkan nilai 0
                     if (totalNilaiRounded < 1.8) {
                         document.getElementById("total-nilai").value = "0";
                         document.getElementById("total-nilai-input").value = "0";
                         document.getElementById("grade-display").textContent = "Grade: E";
                     } else {
-                        document.getElementById("total-nilai").value = totalNilaiRounded;
-                        document.getElementById("total-nilai-input").value = totalNilaiRounded;
+                        document.getElementById("total-nilai").value = formattedTotalNilai;
+                        document.getElementById("total-nilai-input").value = formattedTotalNilai;
                         document.getElementById("grade-display").textContent = "Grade: " + grade;
                     }
 
                     return true;
                 } else {
-                    // Kosongkan Total Nilai SISTER dan Grade jika belum semua terisi
                     document.getElementById("total-nilai").value = "";
                     document.getElementById("total-nilai-input").value = "";
                     document.getElementById("grade-display").textContent = "Grade: -";
@@ -317,7 +306,7 @@
                         return;
                     }
 
-                    // Pastikan perhitungan Total nilai SISTER dilakukan sebelum submit
+                    // Pastikan perhitungan Total Nilai SISTER dilakukan sebelum submit
                     if (!hitungNilaiSISTER()) {
                         e.preventDefault();
                         alert("Gagal menghitung Total Nilai SISTER!");

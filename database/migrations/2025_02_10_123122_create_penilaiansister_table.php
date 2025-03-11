@@ -19,7 +19,7 @@ return new class extends Migration
             $table->tinyInteger('bidang_penelitian')->unsigned();
             $table->tinyInteger('bidang_pengabdian')->unsigned();
             $table->tinyInteger('bidang_penunjang')->unsigned();
-            $table->decimal('total_nilai');
+            $table->decimal('total_nilai', 3, 1);
             $table->timestamps();
         });
     }

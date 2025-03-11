@@ -42,6 +42,8 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            table-layout: fixed;
+            /* Lebar kolom tetap */
         }
 
         th,
@@ -49,7 +51,56 @@
             border: 1px solid #ddd;
             padding: 8px;
             font-size: 11px;
+            word-wrap: break-word;
+            /* Teks panjang turun ke bawah */
+            overflow-wrap: break-word;
+            white-space: normal;
+            /* Wrap alami */
         }
+
+        /* Lebar kolom spesifik */
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 5%;
+        }
+
+        /* No */
+        th:nth-child(2),
+        td:nth-child(2) {
+            width: 25%;
+        }
+
+        /* Nama Dosen */
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 15%;
+        }
+
+        /* NIDN */
+        th:nth-child(4),
+        td:nth-child(4) {
+            width: 20%;
+        }
+
+        /* Prodi */
+        th:nth-child(5),
+        td:nth-child(5) {
+            width: 10%;
+        }
+
+        /* Status */
+        th:nth-child(6),
+        td:nth-child(6) {
+            width: 15%;
+        }
+
+        /* Periode */
+        th:nth-child(7),
+        td:nth-child(7) {
+            width: 10%;
+        }
+
+        /* Total Nilai */
 
         th {
             background-color: #f4f4f4;

@@ -139,16 +139,18 @@
                                                 </td>
                                                 <td class="text-center">
                                                     @php
-                                                        // Menentukan grade berdasarkan nilai total
-                                                        $grade = ((($nilaiSister >= 4.2
-                                                                        ? 'A'
-                                                                        : $nilaiSister >= 3.5)
-                                                                    ? 'B'
-                                                                    : $nilaiSister >= 2.7)
-                                                                ? 'C'
-                                                                : $nilaiSister >= 1.8)
-                                                            ? 'D'
-                                                            : 'E';
+                                                        $nilaiSister = floatval($penilaian->total_nilai);
+                                                        if ($nilaiSister >= 4.2) {
+                                                            $grade = 'A';
+                                                        } elseif ($nilaiSister >= 3.4) {
+                                                            $grade = 'B';
+                                                        } elseif ($nilaiSister >= 2.6) {
+                                                            $grade = 'C';
+                                                        } elseif ($nilaiSister >= 1.8) {
+                                                            $grade = 'D';
+                                                        } else {
+                                                            $grade = 'E';
+                                                        }
                                                     @endphp
                                                     {{ $grade }}
                                                 </td>
