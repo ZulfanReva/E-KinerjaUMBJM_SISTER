@@ -52,12 +52,12 @@ class User extends Authenticatable
      * @param string $role
      * @return static
      */
-    public static function createWithRole(string $username, string $password, string $role = 'dosenberjabatan')
+    public static function createWithRole(string $username, string $password)
     {
         return self::create([
             'username' => $username,
             'password' => bcrypt($password), // Enkripsi password
-            'role' => $role,
+            'role' => 'admin', // Role tetap hanya "admin"
         ]);
     }
 

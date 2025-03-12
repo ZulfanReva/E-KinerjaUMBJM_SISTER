@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique(); // Menambahkan unique constraint di sini
+            $table->string('username')->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'dosenberjabatan'])->default('dosenberjabatan');
+            $table->string('role')->default('admin'); // Menggunakan string tetap dengan default 'admin'
             $table->timestamps();
         });
+
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
