@@ -150,7 +150,7 @@
 
     <!-- Header Text -->
     <div class="header" style="margin-bottom: -10px;">
-        <h2 style="margin-bottom: -5px;">REKAP PENILAIAN PERILAKU KERJA DOSEN</h2>
+        <h2 style="margin-bottom: -5px;">REKAP PENILAIAN KINERJA DOSEN</h2>
         <h3 style="margin-bottom: -5px;">UNIVERSITAS MUHAMMADIYAH BANJARMASIN</h3>
         <h4 style="margin-bottom: -1-px;">PERIODE: {{ $periodeFilter ?? 'SEMUA PERIODE' }}</h4>
     </div>

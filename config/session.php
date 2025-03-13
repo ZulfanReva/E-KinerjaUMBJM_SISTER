@@ -32,7 +32,7 @@ return [
     |
     */
 
-    'lifetime' => env('SESSION_LIFETIME', 3), // Ubah default menjadi 3 menit
+    'lifetime' => env('SESSION_LIFETIME', 30), // Ubah default menjadi 30 menit
 
     'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
 

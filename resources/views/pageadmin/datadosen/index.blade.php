@@ -141,9 +141,9 @@
                                     <section>
                                         <div class="container">
                                             <div class="row justify-content-center py-2">
-                                                <!-- Pagination Dosen Berjabatan -->
+                                                <!-- Pagination Dosen Pengajar -->
                                                 <div class="col-lg-4 mx-auto">
-                                                    {{ $dosenPengajar->appends(['dosenPengajar_page' => $dosenPengajar->currentPage()])->links('pagination::bootstrap-4') }}
+                                                    {{ $dosenPengajar->links('pagination::bootstrap-4') }}
                                                 </div>
                                             </div>
                                         </div>

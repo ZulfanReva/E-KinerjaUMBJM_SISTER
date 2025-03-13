@@ -41,9 +41,12 @@ Route::post('/masuk', [MasukController::class, 'login'])->name('login');
 Route::post('/logout', [MasukController::class, 'logout'])->name('logout');
 
 // Route untuk admin
+
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     // Halaman Beranda Admin
     Route::get('/beranda', [BerandaRoleController::class, 'index'])->name('beranda');
+    // Route untuk filter periode
+    Route::get('/periode/filter', [BerandaRoleController::class, 'filterPeriode'])->name('periode.filter');
 
     // Data Dosen menggunakan resource route
     Route::resource('datadosen', DataDosenController::class)->names([

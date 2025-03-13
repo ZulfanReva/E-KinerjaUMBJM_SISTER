@@ -2,73 +2,81 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Dosen;
 use App\Models\Prodi;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Periode;
 
 class BerandaRoleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::user(); // Ambil pengguna yang sedang login
-
-        // Inisialisasi variabel untuk data yang akan dikirim ke view
+        $user = Auth::user();
         $dosenAktif = null;
         $dosenTugasBelajar = null;
         $jumlahProdi = null;
+        $periodes = Periode::all();
+        $dosenByGrade = ['A' => 0, 'B' => 0, 'C' => 0, 'D' => 0, 'E' => 0];
+        $selectedPeriode = null; // Tambahkan variabel untuk periode yang dipilih
 
-        // Logika untuk admin
         if ($user->role === 'admin') {
             $dosenAktif = Dosen::where('status', 'Aktif')->count();
             $dosenTugasBelajar = Dosen::where('status', 'Nonaktif')->count();
             $jumlahProdi = Prodi::count();
         }
 
-        // Mengambil data dosen dengan penilaian tertinggi dan terendah untuk admin dan dosen berjabatan
-        $topDosen = DB::table('penilaian_perilakukerja')
-            ->join('dosen', 'penilaian_perilakukerja.dosen_id', '=', 'dosen.id')
-            ->select('dosen.nama_dosen', 'penilaian_perilakukerja.total_nilai')
-            ->orderByDesc('penilaian_perilakukerja.total_nilai')
-            ->limit(5)
-            ->get();
+        $periodeId = $request->input('periode_id');
 
-        $lowDosen = DB::table('penilaian_perilakukerja')
-            ->join('dosen', 'penilaian_perilakukerja.dosen_id', '=', 'dosen.id')
-            ->select('dosen.nama_dosen', 'penilaian_perilakukerja.total_nilai')
-            ->orderBy('penilaian_perilakukerja.total_nilai')
-            ->limit(5)
-            ->get();
+        if ($periodeId) {
+            $dosenData = DB::table('penilaian_sister')
+                ->join('dosen', 'penilaian_sister.dosen_id', '=', 'dosen.id')
+                ->select('dosen.nama_dosen', 'penilaian_sister.total_nilai')
+                ->where('penilaian_sister.periode_id', $periodeId)
+                ->get();
 
-        // Mengambil data prodi dengan dosen bergrade A untuk admin dan dosen berjabatan
-        $prodiWithGradeA = DB::table('penilaian_perilakukerja')
-            ->join('dosen', 'penilaian_perilakukerja.dosen_id', '=', 'dosen.id')
-            ->join('prodi', 'dosen.prodi_id', '=', 'prodi.id')
-            ->whereBetween('penilaian_perilakukerja.total_nilai', [4.56, 5.00]) // Menggunakan total_nilai untuk menentukan grade A
-            ->select('prodi.nama_prodi', DB::raw('count(dosen.id) as total_dosen'))
-            ->groupBy('prodi.nama_prodi')
-            ->get();
+            foreach ($dosenData as $dosen) {
+                $totalNilaiRounded = round($dosen->total_nilai, 1);
+                if ($totalNilaiRounded >= 4.2) {
+                    $dosenByGrade['A']++;
+                } elseif ($totalNilaiRounded >= 3.4) {
+                    $dosenByGrade['B']++;
+                } elseif ($totalNilaiRounded >= 2.6) {
+                    $dosenByGrade['C']++;
+                } elseif ($totalNilaiRounded >= 1.8) {
+                    $dosenByGrade['D']++;
+                } else {
+                    $dosenByGrade['E']++;
+                }
+            }
 
-        // Kirim data ke view sesuai dengan role
+            // Ambil nama periode yang dipilih
+            $selectedPeriode = Periode::where('id', $periodeId)->first();
+        }
+
         if ($user->role === 'admin') {
             return view('pageadmin.berandaadmin', compact(
                 'dosenAktif',
                 'dosenTugasBelajar',
                 'jumlahProdi',
-                'topDosen',
-                'lowDosen',
-                'prodiWithGradeA'
+                'dosenByGrade',
+                'periodes',
+                'selectedPeriode' // Tambahkan ke compact
             ));
         } elseif ($user->role === 'dosenberjabatan') {
             return view('pagedosenberjabatan.berandadosenberjabatan', compact(
-                'topDosen',
-                'lowDosen',
-                'prodiWithGradeA'
+                'dosenByGrade',
+                'periodes',
+                'selectedPeriode' // Tambahkan ke compact
             ));
         } else {
-            // Jika role tidak dikenali
             abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
+    }
+
+    public function filterPeriode(Request $request)
+    {
+        return redirect()->route('admin.beranda', ['periode_id' => $request->input('periode_id')]);
     }
 }

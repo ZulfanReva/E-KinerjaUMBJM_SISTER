@@ -82,6 +82,7 @@ class PenilaianSisterSeeder extends Seeder
             ['dosen_id' => 72, 'periode_id' => 1, 'bidang_pendidikan' => 2, 'bidang_penelitian' => 2, 'bidang_pengabdian' => 2, 'bidang_penunjang' => 2, 'total_nilai' => 3],
             ['dosen_id' => 73, 'periode_id' => 1, 'bidang_pendidikan' => 2, 'bidang_penelitian' => 2, 'bidang_pengabdian' => 2, 'bidang_penunjang' => 2, 'total_nilai' => 3],
             ['dosen_id' => 74, 'periode_id' => 1, 'bidang_pendidikan' => 2, 'bidang_penelitian' => 2, 'bidang_pengabdian' => 2, 'bidang_penunjang' => 2, 'total_nilai' => 3],
+            ['dosen_id' => 75, 'periode_id' => 1, 'bidang_pendidikan' => 3, 'bidang_penelitian' => 2, 'bidang_pengabdian' => 2, 'bidang_penunjang' => 2, 'total_nilai' => 3.5],
             ['dosen_id' => 76, 'periode_id' => 1, 'bidang_pendidikan' => 2, 'bidang_penelitian' => 2, 'bidang_pengabdian' => 2, 'bidang_penunjang' => 2, 'total_nilai' => 3],
             ['dosen_id' => 77, 'periode_id' => 1, 'bidang_pendidikan' => 3, 'bidang_penelitian' => 2, 'bidang_pengabdian' => 2, 'bidang_penunjang' => 2, 'total_nilai' => 3.5],
             ['dosen_id' => 78, 'periode_id' => 1, 'bidang_pendidikan' => 2, 'bidang_penelitian' => 2, 'bidang_pengabdian' => 2, 'bidang_penunjang' => 2, 'total_nilai' => 3],

@@ -157,8 +157,8 @@
                                                 <td class="text-center">
                                                     <!-- Tombol Cetak -->
                                                     <a href="{{ route('admin.laporanpenilaian.show', $penilaian->id) }}"
-                                                        class="btn btn-sm bg-gradient-info me-2" title="Cetak">
-                                                        <i class="fa fa-print" style="font-size:10px"></i> Cetak
+                                                        class="btn btn-sm bg-gradient-info me-2" title="Lihat">
+                                                        <i class="fa fa-eye" style="font-size:10px"></i> Lihat
                                                     </a>
                                                 </td>
                                             </tr>

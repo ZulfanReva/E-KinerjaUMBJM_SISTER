@@ -156,7 +156,7 @@
                                         </script>
 
                                         <!-- Logika untuk kolom jabatan -->
-                                        <script>
+                                        {{-- <script>
                                             // Elemen yang diperlukan
                                             const jabatanSelect = document.getElementById('jabatanSelect');
                                             const additionalFields = document.getElementById('additionalFields');
@@ -172,7 +172,7 @@
                                                     additionalFields.style.display = 'none'; // Sembunyikan kolom
                                                 }
                                             });
-                                        </script>
+                                        </script> --}}
                                     </div>
 
                                     <div id="additionalForms"></div>

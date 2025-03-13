@@ -23,14 +23,14 @@ class DataDosenController extends Controller
             ->whereHas('jabatan', function ($query) {
                 $query->where('nama_jabatan', 'DOSEN PENGAJAR');
             })
-            ->paginate(10, ['*'], 'dosenPengajar_page'); // Pagination untuk Dosen Pengajar
+            ->paginate(10, ['*'], 'dosenPengajar_page');
 
         // Ambil dosen yang bukan 'DOSEN PENGAJAR'
         $dosenBerjabatan = Dosen::with('prodi', 'jabatan', 'user')
             ->whereHas('jabatan', function ($query) {
                 $query->where('nama_jabatan', '!=', 'DOSEN PENGAJAR');
             })
-            ->paginate(10, ['*'], 'dosenBerjabatan_page'); // Pagination untuk Dosen Berjabatan
+            ->paginate(10, ['*'], 'dosenBerjabatan_page');
 
         // Ambil daftar Prodi untuk dropdown di filter
         $listProdi = Prodi::all();
@@ -50,8 +50,8 @@ class DataDosenController extends Controller
         }
         $dosenPengajar = $queryPengajar->whereHas('jabatan', function ($query) {
             $query->where('nama_jabatan', 'DOSEN PENGAJAR');
-        })->paginate(10, ['*'], 'dosenPengajar_page');
-
+        })->paginate(10, ['*'], 'dosenPengajar_page')
+            ->appends($request->only(['prodi', 'status'])); // Tambahkan parameter filter ke pagination
 
         // Filter untuk Dosen Berjabatan
         $queryBerjabatan = Dosen::with('prodi', 'jabatan', 'user');
@@ -63,7 +63,8 @@ class DataDosenController extends Controller
         }
         $dosenBerjabatan = $queryBerjabatan->whereHas('jabatan', function ($query) {
             $query->where('nama_jabatan', '!=', 'DOSEN PENGAJAR');
-        })->paginate(10, ['*'], 'dosenBerjabatan_page');
+        })->paginate(10, ['*'], 'dosenBerjabatan_page')
+            ->appends($request->only(['prodi', 'status'])); // Tambahkan parameter filter ke pagination
 
         // Ambil daftar Prodi untuk dropdown di filter
         $listProdi = Prodi::all();

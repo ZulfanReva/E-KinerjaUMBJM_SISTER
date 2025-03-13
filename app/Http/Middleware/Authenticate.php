@@ -19,21 +19,17 @@ class Authenticate
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        // Cek apakah user sudah login
         if (!Auth::check()) {
-            // Tambahkan pesan flash menggunakan Session facade
             Session::flash('warning', 'Sesi Anda telah kedaluwarsa. Silakan login kembali.');
-            return redirect()->route('masuk'); // Arahkan ke halaman login jika belum login
+            return redirect()->route('masuk');
         }
 
         $user = Auth::user();
 
-        // Cek apakah user memiliki role yang sesuai
         if (in_array($user->role, $roles)) {
-            return $next($request); // Lanjutkan jika role sesuai
+            return $next($request);
         }
 
-        // Jika tidak sesuai, kembalikan 403
         return abort(403, 'Unauthorized access');
     }
 }

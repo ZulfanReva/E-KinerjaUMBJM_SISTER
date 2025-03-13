@@ -33,6 +33,15 @@
         <!-- End Navbar -->
 
         <div class="container-fluid py-4">
+            <!-- Tombol di sebelah kanan -->
+            <div class="d-flex justify-content-end">
+                <!-- Tombol Filter -->
+                <button class="btn btn-sm bg-gradient-info me-2" data-bs-toggle="modal" data-bs-target="#filterModal"
+                    title="Filter Periode">
+                    <i class="fa fa-filter" style="font-size:10px"></i> Filter Periode
+                </button>
+            </div>
+
             <div class="row">
                 <!-- Dosen Aktif -->
                 <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
@@ -132,44 +141,135 @@
             </div>
         </div>
 
+
         <div class="container-fluid py-4">
             <div class="row">
-                <!-- Chart: 5 Dosen dengan Penilaian Tertinggi -->
-                <div class="col-12 col-md-6 mb-4">
+                <!-- Chart: Distribusi Grade Dosen -->
+                <div class="col-12 mb-4">
                     <div class="card h-100">
                         <div class="card-header pb-0 p-3">
-                            <h6 class="mb-0">5 Dosen dengan Penilaian Tertinggi</h6>
+                            <h6 class="mb-0">
+                                Distribusi Grade Dosen
+                                @if ($selectedPeriode)
+                                    - {{ $selectedPeriode->nama_periode }}
+                                @endif
+                            </h6>
                         </div>
                         <div class="card-body">
-                            <canvas id="topTenDosenChart"></canvas>
-                            <ul class="list-unstyled text-right">
-                                @foreach ($topDosen as $index => $dosen)
-                                    <li>({{ $index + 1 }}) {{ $dosen->nama_dosen }} - {{ $dosen->total_nilai }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Chart: 5 Dosen dengan Penilaian Terendah -->
-                <div class="col-12 col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header pb-0 p-3">
-                            <h6 class="mb-0">5 Dosen dengan Penilaian Terendah</h6>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="lowTenDosenChart"></canvas>
-                            <ul class="list-unstyled text-right">
-                                @foreach ($lowDosen as $index => $dosen)
-                                    <li>({{ $index + 1 }}) {{ $dosen->nama_dosen }} - {{ $dosen->total_nilai }}</li>
-                                @endforeach
-                            </ul>
+                            <div class="chart-container">
+                                <canvas id="dosenGradeChart"></canvas>
+                            </div>
+                            @if ($selectedPeriode && !empty($dosenByGrade) && array_sum($dosenByGrade) > 0)
+                                <ul class="list-unstyled grade-list">
+                                    <li>Grade A: {{ $dosenByGrade['A'] }}</li>
+                                    <li>Grade B: {{ $dosenByGrade['B'] }}</li>
+                                    <li>Grade C: {{ $dosenByGrade['C'] }}</li>
+                                    <li>Grade D: {{ $dosenByGrade['D'] }}</li>
+                                    <li>Grade E: {{ $dosenByGrade['E'] }}</li>
+                                </ul>
+                            @elseif ($selectedPeriode)
+                                <p class="text-center">Periode yang dipilih belum memiliki Nilai</p>
+                            @else
+                                <p class="text-center">Silakan pilih periode untuk melihat distribusi grade</p>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
+        <!-- CSS untuk mengatur ukuran chart dan daftar grade -->
+        <style>
+            .chart-container {
+                position: relative;
+                width: 100%;
+                height: 300px;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .grade-list {
+                display: flex;
+                justify-content: space-between;
+                /* Menjaga jarak antar item */
+                padding: 0;
+                margin-top: 10px;
+                list-style: none;
+                /* Menghapus bullet points */
+                align-items: center;
+                /* Memastikan item sejajar secara vertikal */
+            }
+
+            .grade-list li {
+                flex: 1;
+                /* Membagi ruang secara merata untuk setiap grade */
+                text-align: center;
+                /* Memusatkan teks di bawah setiap bar */
+                margin-right: 0;
+                /* Menghapus margin kanan karena flex sudah mengatur jarak */
+            }
+
+            /* Opsional: Menambahkan warna sesuai bar chart untuk konsistensi */
+            .grade-list li:nth-child(1) {
+                color: rgba(75, 192, 192, 1);
+            }
+
+            /* Grade A */
+            .grade-list li:nth-child(2) {
+                color: rgba(54, 162, 235, 1);
+            }
+
+            /* Grade B */
+            .grade-list li:nth-child(3) {
+                color: rgba(255, 206, 86, 1);
+            }
+
+            /* Grade C */
+            .grade-list li:nth-child(4) {
+                color: rgba(255, 159, 64, 1);
+            }
+
+            /* Grade D */
+            .grade-list li:nth-child(5) {
+                color: rgba(255, 99, 132, 1);
+            }
+
+            /* Grade E */
+        </style>
+
+        <!-- Modal Filter Periode -->
+        <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="filterModalLabel">Filter Periode</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('admin.periode.filter') }}" method="GET">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="filterPeriode" class="form-label">Pilih Periode</label>
+                                <select class="form-select" id="filterPeriode" name="periode_id">
+                                    <option value="">Pilih Periode</option>
+                                    @foreach ($periodes as $periode)
+                                        <option value="{{ $periode->id }}"
+                                            {{ request('periode_id') == $periode->id ? 'selected' : '' }}>
+                                            {{ $periode->nama_periode }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn bg-gradient-info">Terapkan Filter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <!-- Footer -->
         <footer class="footer pt-3">
             <div class="container-fluid">
@@ -188,104 +288,63 @@
             </div>
         </footer>
 
-        <!-- Chart.js Library -->
+        <!-- Chart.js Script -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
-            // Chart: 5 Dosen dengan Penilaian Tertinggi
-            const topTenDosenCtx = document.getElementById('topTenDosenChart').getContext('2d');
-            const topTenDosenChart = new Chart(topTenDosenCtx, {
+            const dosenByGrade = @json($dosenByGrade);
+            const ctx = document.getElementById('dosenGradeChart').getContext('2d');
+
+            const dosenGradeChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['1', '2', '3', '4', '5'], // Label numerik
+                    labels: ['Grade A', 'Grade B', 'Grade C', 'Grade D', 'Grade E'],
                     datasets: [{
-                        label: 'Nilai',
-                        data: [
-                            @foreach ($topDosen as $dosen)
-                                {{ $dosen->total_nilai }},
-                            @endforeach
-                        ],
-                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Chart: 5 Dosen dengan Penilaian Terendah
-            const lowTenDosenCtx = document.getElementById('lowTenDosenChart').getContext('2d');
-            const lowTenDosenChart = new Chart(lowTenDosenCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['1', '2', '3', '4', '5'], // Label numerik
-                    datasets: [{
-                        label: 'Nilai',
-                        data: [
-                            @foreach ($lowDosen as $dosen)
-                                {{ $dosen->total_nilai }},
-                            @endforeach
-                        ],
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Chart: Prodi dengan Dosen Bergrade A
-            const prodiGradeAChartCtx = document.getElementById('prodiGradeAChart').getContext('2d');
-            const prodiGradeAChart = new Chart(prodiGradeAChartCtx, {
-                type: 'pie',
-                data: {
-                    labels: [
-                        @foreach ($prodiWithGradeA as $prodi)
-                            '{{ $prodi->nama_prodi }}',
-                        @endforeach
-                    ],
-                    datasets: [{
-                        label: 'Jumlah Dosen Bergrade A',
-                        data: [
-                            @foreach ($prodiWithGradeA as $prodi)
-                                {{ $prodi->total_dosen }},
-                            @endforeach
-                        ],
+                        label: 'Jumlah Dosen',
+                        data: [dosenByGrade.A, dosenByGrade.B, dosenByGrade.C, dosenByGrade.D, dosenByGrade.E],
                         backgroundColor: [
                             'rgba(75, 192, 192, 0.6)',
-                            'rgba(255, 99, 132, 0.6)',
-                            'rgba(255, 206, 86, 0.6)',
                             'rgba(54, 162, 235, 0.6)',
-                            'rgba(153, 102, 255, 0.6)',
-                            'rgba(255, 159, 64, 0.6)'
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(255, 159, 64, 0.6)',
+                            'rgba(255, 99, 132, 0.6)'
                         ],
                         borderColor: [
                             'rgba(75, 192, 192, 1)',
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(255, 206, 86, 1)',
                             'rgba(54, 162, 235, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 99, 132, 1)'
                         ],
                         borderWidth: 1
                     }]
                 },
                 options: {
-                    responsive: true, // Disable responsiveness
-
+                    responsive: true,
+                    maintainAspectRatio: false, // Matikan rasio aspek default agar sesuai container
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Jumlah Dosen'
+                            },
+                            suggestedMax: 10,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: ''
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
                 }
             });
         </script>
